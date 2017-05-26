@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import Tkinter
 from datetime import datetime
-import sys, getopt
+import sys, getopt, os
 
 
 class NoteCreator(Tkinter.Frame):
@@ -25,7 +25,15 @@ class NoteCreator(Tkinter.Frame):
 
   def save_note(self, event):
     fullpath = event.widget.get()
+    filename = os.path.basename(fullpath)
+    name_split = filename.split('.')[0].split('_')
+    title = name_split[1]
+    datetime_str = name_split[0]
     file = open(fullpath, 'w+')
+    file.write('<div style="display:none">\n')
+    file.write('<p>title: '+title.encode('utf-8')+'</p>\n')
+    file.write('<p>datetime: '+datetime_str+'</p>\n')
+    file.write('</div>\n\n')
     self.master.destroy()
     pass
 

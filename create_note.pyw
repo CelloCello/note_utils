@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import Tkinter
 from datetime import datetime
-import sys, getopt
+import sys, getopt, os
 
 
 class NoteCreator(Tkinter.Frame):
@@ -9,18 +9,11 @@ class NoteCreator(Tkinter.Frame):
     Tkinter.Frame.__init__(self, master)
     self.master = master
     master.title('Note Creator')
-    # self.grid()
-
-    # self.btn_save = Tkinter.Button(master, text="Save")
-    # self.btn_save.pack() 
-    # self.btn_save.grid(row=0, column=2)  
-    # self.label = Tkinter.Label(master, text="Hello World!")   #建立標籤物件
-    # self.label.pack()
     if len(sys.argv) > 1:
       path = sys.argv[1] + "\\"
       time_str = datetime.strftime(datetime.now(), '%Y%m%d')
       fullpath = path + time_str + "_.md"
-      self.label = Tkinter.Label(master, text=fullpath)   #建立標籤物件
+      self.label = Tkinter.Label(master, text=fullpath)
       self.label.pack()
       self.text_filename = Tkinter.Entry(master, width=50)
       self.text_filename.bind("<Return>", self.save_note)
@@ -32,11 +25,17 @@ class NoteCreator(Tkinter.Frame):
 
   def save_note(self, event):
     fullpath = event.widget.get()
+    filename = os.path.basename(fullpath)
+    name_split = filename.split('.')[0].split('_')
+    title = name_split[1]
+    datetime_str = name_split[0]
     file = open(fullpath, 'w+')
+    file.write('<div style="display:none">\n')
+    file.write('<p>title: '+title.encode('utf-8')+'</p>\n')
+    file.write('<p>datetime: '+datetime_str+'</p>\n')
+    file.write('</div>\n\n')
     self.master.destroy()
     pass
-
-
 
 
 if __name__ == '__main__':
